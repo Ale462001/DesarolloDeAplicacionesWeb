@@ -1,9 +1,11 @@
-import Button from 'react-bootstrap/Button'
-import Form from 'react-bootstrap/Form'
-import './Form.scss'
-import { useTaskStore } from './store/taskStore'
-import { useGoalStore } from './store/goalStore'
-import { useMenuStore } from './store/menuStore'
+import Form from "react-bootstrap/Form";
+import "./Form.scss";
+import Button from 'react-bootstrap/Button';
+
+import { useTaskStore } from "../../store/taskStore";
+import { useGoalStore } from "../../store/goalStore";
+import { useMenuStore } from "../../store/menuStore";
+
 import { useRef } from 'react';
 
 type FormTaskAndGoalProps = {

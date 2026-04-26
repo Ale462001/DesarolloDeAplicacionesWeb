@@ -1,30 +1,42 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
-
-
-export type task = {
+export type goal = {
   id: number;
   name: string;
-  description: string;
+  descripcion: string;
   dueDate: string;
 }
 
-type TaskState = {
-  tasks: task[];
-  setTasks: (tasks: task[]) => void;
-  removeTask: (task: task) => void;
-  addTask: (task: task) => void;
+type GoalState = {
+  goals: goal[];
+  setGoals: (goals: goal[]) => void;
+  removeGoal: (goal: goal) => void;
+  addGoal: (goal: goal) => void;
 }
 
-export const useTaskStore = create<TaskState>()(
+export const useGoalStore = create<GoalState>()(
   devtools(
     (set) => ({
-      tasks: [],
-      setTasks: (tasks) => set({ tasks }, false, 'setTasks'),
-      removeTask: (task) => set((state) => ({ tasks: state.tasks.filter((t) => t.id !== task.id) }), false, 'removeTask'),
-      addTask: (task) => set((state) => ({ tasks: [...state.tasks, task] }), false, 'addTask'),
+      goals: [],
+      setGoals: (goals) => set({ goals }, false, 'setGoals'),
+      removeGoal: (goal) =>
+        set(
+          (state) => ({
+            goals: state.goals.filter((g) => g.id !== goal.id),
+          }),
+          false,
+          'removeGoal'
+        ),
+      addGoal: (goal) =>
+        set(
+          (state) => ({
+            goals: [...state.goals, goal],
+          }),
+          false,
+          'addGoal'
+        ),
     }),
-    { name: 'task-store' }
+    { name: 'goal-store' }
   )
-)
+);

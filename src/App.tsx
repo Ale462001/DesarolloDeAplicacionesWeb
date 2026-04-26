@@ -1,16 +1,21 @@
 import './App.scss'
+
 import Item from './components/Item/Item'
 import FormTaskAndGoal from './components/Form/Form'
 import Menu from './components/Menu/Menu'
+import AddingMobileButton from './components/AddingMobileButton/AddingMobileButton'
+
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Container from 'react-bootstrap/Container'
-import AddingMobileButton from './components/AddingMobileButton/AddingMobileButton'
 import Modal from 'react-bootstrap/Modal'
+
 import { useState, useEffect } from 'react'
+
 import { useTaskStore } from './store/taskStore'
 import { useGoalStore } from './store/goalStore'
 import { useMenuStore } from './store/menuStore'
+
 
 function App() {
   const [showModal, setShowModal] = useState(false)
