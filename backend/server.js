@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const mongoose = require("mongoose");
 
 const app = express();
 
@@ -7,14 +8,40 @@ app.use(cors());
 app.use(express.json());
 
 const PORT = 3000;
-
 const API_KEY = "12345";
 
-let tasks = [];
-let goals = [];
+
+
+mongoose.connect("mongodb://127.0.0.1:27017/todolist")
+.then(() => {
+  console.log("Conectado a MongoDB");
+})
+.catch((error) => {
+  console.log(error);
+});
+
+
+
+const taskSchema = new mongoose.Schema({
+  title: String,
+  deadline: String,
+});
+
+const Task = mongoose.model("Task", taskSchema);
+
+
+
+const goalSchema = new mongoose.Schema({
+  title: String,
+  deadline: String,
+});
+
+const Goal = mongoose.model("Goal", goalSchema);
+
 
 
 app.use((req, res, next) => {
+
   const apiKey = req.headers["x-api-key"];
 
   if (apiKey !== API_KEY) {
@@ -27,12 +54,18 @@ app.use((req, res, next) => {
 });
 
 
-app.get("/tasks", (req, res) => {
+
+app.get("/getTasks", async (req, res) => {
+
+  const tasks = await Task.find();
+
   res.status(200).json(tasks);
 });
 
 
-app.post("/tasks", (req, res) => {
+
+app.post("/addTask", async (req, res) => {
+
   const { title, deadline } = req.body;
 
   if (!title || !deadline) {
@@ -41,13 +74,12 @@ app.post("/tasks", (req, res) => {
     });
   }
 
-  const newTask = {
-    id: Date.now(),
+  const newTask = new Task({
     title,
     deadline,
-  };
+  });
 
-  tasks.push(newTask);
+  await newTask.save();
 
   res.status(200).json({
     message: "Tarea agregada correctamente",
@@ -56,10 +88,12 @@ app.post("/tasks", (req, res) => {
 });
 
 
-app.delete("/tasks/:id", (req, res) => {
-  const id = Number(req.params.id);
 
-  const taskExists = tasks.find((task) => task.id === id);
+app.delete("/removeTask/:id", async (req, res) => {
+
+  const id = req.params.id;
+
+  const taskExists = await Task.findById(id);
 
   if (!taskExists) {
     return res.status(400).json({
@@ -67,7 +101,7 @@ app.delete("/tasks/:id", (req, res) => {
     });
   }
 
-  tasks = tasks.filter((task) => task.id !== id);
+  await Task.findByIdAndDelete(id);
 
   res.status(200).json({
     message: "Tarea eliminada correctamente",
@@ -75,12 +109,18 @@ app.delete("/tasks/:id", (req, res) => {
 });
 
 
-app.get("/goals", (req, res) => {
+
+app.get("/getGoals", async (req, res) => {
+
+  const goals = await Goal.find();
+
   res.status(200).json(goals);
 });
 
 
-app.post("/goals", (req, res) => {
+
+app.post("/addGoal", async (req, res) => {
+
   const { title, deadline } = req.body;
 
   if (!title || !deadline) {
@@ -89,19 +129,41 @@ app.post("/goals", (req, res) => {
     });
   }
 
-  const newGoal = {
-    id: Date.now(),
+  const newGoal = new Goal({
     title,
     deadline,
-  };
+  });
 
-  goals.push(newGoal);
+  await newGoal.save();
 
   res.status(200).json({
     message: "Meta agregada correctamente",
     goal: newGoal,
   });
 });
+
+
+
+app.delete("/removeGoal/:id", async (req, res) => {
+
+  const id = req.params.id;
+
+  const goalExists = await Goal.findById(id);
+
+  if (!goalExists) {
+    return res.status(400).json({
+      message: "La meta no existe",
+    });
+  }
+
+  await Goal.findByIdAndDelete(id);
+
+  res.status(200).json({
+    message: "Meta eliminada correctamente",
+  });
+});
+
+
 
 app.listen(PORT, () => {
   console.log(`Servidor corriendo en puerto ${PORT}`);
