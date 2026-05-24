@@ -14,3 +14,8 @@ Funciones:
 - Agregar metas
 - Validación con API KEY
 - Respuestas HTTP 200, 400 y 401
+
+
+En semana 5: - MongoDB
+- Mongoose
+- CRUD de tareas y metas
